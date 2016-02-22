@@ -1,7 +1,7 @@
 import re
 from collections import Counter
 from nltk.corpus import words
-import crawl_processor as cp
+
 
 ###################
 # Tokenizer class #
@@ -59,7 +59,7 @@ def print_Frequencies(tokenCounter):
 
 def getThreeGrams(tokenList):
 	gram_3_list = [];
-	#no_stop_tokens = cp.remove_stops(tokenList)
+	
 	for i in xrange(len(tokenList) - 2):
 		gram_3_list += [ (tokenList[i], tokenList[i+1], tokenList[i+2]) ]
 
@@ -92,7 +92,7 @@ def print_3GramFrequencies(gram3_Counter):
 
 def getTwoGrams(tokenList):
 	gram_2_list = [];
-	#no_stop_tokens = cp.remove_stops(tokenList)
+	
 	for i in xrange(len(tokenList) - 1):
 		gram_2_list += [ (tokenList[i], tokenList[i+1]) ]
 
