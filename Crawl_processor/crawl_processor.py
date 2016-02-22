@@ -2,47 +2,33 @@ from utils import *
 from cStringIO import StringIO
 from collections import Counter
 from operator import itemgetter
+import cPickle as pickle
 
 ####################
 # File segmentator #
 ####################
 
 class segmentator:
-	""" Class for reading the flat-file database and parsing it into pages """
+	""" Class for reading the html dictionary database and parsing it into pages """
 
-	def __init__(self, fileName = 'out.txt', page_delim = '....swarun...,,,,,arjun,,,....shiladitya....\n'):
+	def __init__(self, fileName = '../Data/out.pkl'):
 
-		self.file = open(fileName, 'r')
-		self.delim = page_delim
+		self.html_dict = pickle.load(open(fileName, 'r'))
+		self.urls = self.html_dict.keys()
+		self.num_pages = len(self.html_dict)
+		self.current_urlIX = 0
 
 
 	def getNextPage(self):
 
-		url = self.file.readline()[:-1]
-		if len(url) == 0:
+		if self.current_urlIX == self.num_pages:
 			return []
 
-		data = ''
+		url = self.urls[self.current_urlIX]
+		self.current_urlIX += 1
 
-		while True:
-			line = self.file.readline()
-
-			if not line:
-				break
-				
-			if line == self.delim:
-				break
-			else:
-				data = data + line
-
+		data = self.html_dict[url]['body']
 		return [url, data]
-
-	def __del__(self):
-		self.file.close()
-
-
-	def __del__(self):
-		self.file.close()
 
 ########################
 # Token list generator #
