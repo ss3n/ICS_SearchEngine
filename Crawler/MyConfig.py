@@ -78,12 +78,14 @@ class MyConfig(Config):
         print(parsedData["url"])
 
         self.fptr = open("out.pkl", 'a')
-	p_obj = pickle.dumps(parsedData,2)
-	self.fptr.write(p_obj)
-	self.fptr.write('....swarun...,,,,,arjun,,,....shiladitya....')
+		p_obj = pickle.dumps(parsedData,2)
+		self.fptr.write(p_obj)
+		self.fptr.write('....swarun...,,,,,arjun,,,....shiladitya....')
+
         #self.fptr.write(parsedData["url"]+'\n')
-        #self.fptr.write(parsedData["html"].encode("U7"))
+        #self.fptr.write(parsedData["text"].encode("U7"))
         #self.fptr.write("\n....swarun...,,,,,arjun,,,....shiladitya....\n")
+        
         self.fptr.close()
         #print(parsedData["text"])
         return

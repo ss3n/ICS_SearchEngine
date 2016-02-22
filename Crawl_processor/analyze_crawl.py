@@ -25,18 +25,18 @@ def main():
 	
 		elif ip==2:
 			max_url=list[0][0]
-			max=len(list[1][0])
+			max_len=len(list[1][0])
 			url_list=list[0]
 			token_list=list[1]
 			i=0
 			index=0
 			for page in token_list:	
-				if len(page)>max:
+				if len(page)>max_len:
 					max_url=url_list[i]
-					index=i
-				i+=1
+					max_len=len(page)
+				i += 1
 
-			string = "The URL of largest page is " + max_url + "\nLength of page is : "+str(len(token_list[index]))
+			string = "The URL of largest page is " + max_url + "\nLength of page is : "+str(max_len)
 			print string
 
 			file = open('longest_page.txt', 'w')
