@@ -17,6 +17,7 @@ The value corresponding to each key is again a dictionary. This secondary dictio
     3. key - 'anchors'; value - list of strings containing anchor texts
     
 There are two files:
+
   outU8.pkl - contains all strings encoded in UTF-8
   
   out.pkl - contains all strings encoded in ASCII
