@@ -14,10 +14,14 @@ while True:
 	if len(entry) == 0:
 		break
 
-        insertDocument(db, entry)
+        newdic = {}
+        newdic["url"] = entry.keys()[0]
+        newdic["content"] = entry.values()[0]
+
+        insertDocument(db, newdic)
 
         ctr+=1
-        if ctr%10==0:
+        if ctr%100==0:
             print ctr 
 
 
