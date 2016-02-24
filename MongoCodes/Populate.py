@@ -17,7 +17,8 @@ while True:
         insertDocument(db, entry)
 
         ctr+=1
-        print ctr 
+        if ctr%10==0:
+            print ctr 
 
 
 

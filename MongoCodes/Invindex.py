@@ -24,6 +24,11 @@
 
 #Arjun's modification of swarun's version
 from numpy import log10 as log
+from pymongo import MongoClient
+from MongoWrite import *
+
+client=createConnection()
+db = selectdb(client)
 
 def invertedIndex(xyz):
 	wordsinDocs = {}
@@ -51,3 +56,9 @@ def invertedIndex(xyz):
 			docs[url] = (1.0 + log(tf))*log(N/df)
 
 	return wordsinDocs
+
+cursor = db['irindexer'].find()
+print type(cursor)
+for doc in cursor:
+    print doc
+    print type(doc)
