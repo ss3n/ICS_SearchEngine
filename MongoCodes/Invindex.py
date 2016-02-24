@@ -29,36 +29,62 @@ from MongoWrite import *
 
 client=createConnection()
 db = selectdb(client)
+coll = db['ir']
 
 def invertedIndex(xyz):
-	wordsinDocs = {}
+    wordsinDocs = {}
 
-	N = len(xyz)
+    N = len(xyz)
 
-	for url,doc in xyz:
-		for word, count in doc:
-			# if word is in wordsinDocs:
-			# 	#wordsinDocs[word] += url
-			# 	wordsinDocs[word][url] = count
-			# else:
-			# 	wordsinDocs[word] = {}
-			# 	wordsinDocs[word][url] = count
-			if word not in wordsinDocs:
-				wordsinDocs[word] = {}
+    for url,doc in xyz:
+        for word, count in doc:
+            # if word is in wordsinDocs:
+                    # 	#wordsinDocs[word] += url
+                    # 	wordsinDocs[word][url] = count
+                    # else:
+                    # 	wordsinDocs[word] = {}
+                    # 	wordsinDocs[word][url] = count
+            if word not in wordsinDocs:
+                wordsinDocs[word] = {}
+                wordsinDocs[url] = count
 
-			wordsinDocs[word][url] = count
+            wordsinDocs[word][url] = count
 
-	for word, docs in wordsinDocs:
-		df = len(docs)
+    for word, docs in wordsinDocs:
+        df = len(docs)
 
-		for url in docs.keys():
-			tf = docs[url]
-			docs[url] = (1.0 + log(tf))*log(N/df)
+        for url in docs.keys():
+            tf = docs[url]
+            docs[url] = (1.0 + log(tf))*log(N/df)
 
-	return wordsinDocs
+        return wordsinDocs
 
-cursor = db['irindexer'].find()
-print type(cursor)
-for doc in cursor:
-    print doc
-    print type(doc)
+def mongoInvertedIndex(coll):
+    ctr=0
+    wordsinDocs = {}
+    coll.find()
+    for page in coll.find():
+        url, doc = page['url'], page['content']['body']
+
+        for word, count in doc.iteritems():
+            if word not in wordsinDocs:
+                wordsinDocs[word] = {}
+            wordsinDocs[word][url] = count
+        ctr+=1
+        #if ctr==3:
+        #    break
+        print ctr
+        
+    N=ctr
+    for word, docs in wordsinDocs.iteritems():
+        df = len(docs)
+        
+        for url in docs.keys():
+            tf = docs[url]
+            docs[url] = (1.0 + log(tf))*log(N/df)
+    print len(wordsinDocs.keys())
+    
+    return wordsinDocs
+
+wd = mongoInvertedIndex(coll)
+

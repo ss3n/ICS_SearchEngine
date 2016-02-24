@@ -23,6 +23,7 @@ while True:
         ctr+=1
         if ctr%100==0:
             print ctr 
+print ctr, 'records inserted into database'
 
 
 
