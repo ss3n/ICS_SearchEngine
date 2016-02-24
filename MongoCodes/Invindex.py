@@ -71,20 +71,20 @@ def mongoInvertedIndex(coll):
                 wordsinDocs[word] = {}
             wordsinDocs[word][url] = count
         ctr+=1
-        #if ctr==3:
-        #    break
         print ctr
-        
-    N=ctr
+    
+    return wordsinDocs, ctr
+
+def tf_idf(wordsinDocs, N):
     for word, docs in wordsinDocs.iteritems():
         df = len(docs)
-        
+    
         for url in docs.keys():
             tf = docs[url]
             docs[url] = (1.0 + log(tf))*log(N/df)
     print len(wordsinDocs.keys())
-    
-    return wordsinDocs
 
-wd = mongoInvertedIndex(coll)
+
+wd, N = mongoInvertedIndex(coll)
+result = tf_idf(wd, N)
 
