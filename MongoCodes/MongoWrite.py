@@ -15,9 +15,6 @@ def selectdb(client, dbname='irindexer'):
 #collection - string representing collection
 #record - Record containging JSON-like data
 def insertDocument(db, record=None, collection='ir'):
-    print type(record)
-    print record
-    print
     result = db[collection].insert(record, check_keys=False)
     return result
 
