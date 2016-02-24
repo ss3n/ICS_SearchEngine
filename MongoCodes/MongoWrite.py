@@ -14,11 +14,11 @@ def selectdb(client, dbname='irindexer'):
 #db - database object
 #collection - string representing collection
 #record - Record containging JSON-like data
-def insertDocument(db, record):
-    if collection not in ['head', 'body', 'anchors']:
-        print 'Invalid collection'
-        return -1
-    result = db[collection].insert_one({url:record})
+def insertDocument(db, record=None, collection='ir'):
+    print type(record)
+    print record
+    print
+    result = db[collection].insert(record, check_keys=False)
     return result
 
 #Bulk Inserts many records into Database
