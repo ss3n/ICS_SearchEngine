@@ -36,7 +36,8 @@ for i in xrange(5):
 					href = ''
 
 				text = anchors[i].text.encode('ascii', 'replace')
-				anchors[i] = [href, text]
+				#anchors[i] = [href, text]
+				anchors[i] = [text]
 
 			data_dict = {}
 			data_dict['head'] = head

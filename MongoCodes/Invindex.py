@@ -28,8 +28,8 @@ from pymongo import MongoClient
 from MongoWrite import *
 
 client=createConnection()
-db = selectdb(client)
-coll = db['ir']
+db = selectDatabase(client)
+coll = db['fwdIX']
 
 def invertedIndex(xyz):
     wordsinDocs = {}
@@ -62,7 +62,7 @@ def invertedIndex(xyz):
 def mongoInvertedIndex(coll):
     ctr=0
     wordsinDocs = {}
-    coll.find()
+    #coll.find()
     for page in coll.find():
         url, doc = page['url'], page['content']['body']
 
@@ -71,8 +71,7 @@ def mongoInvertedIndex(coll):
                 wordsinDocs[word] = {}
             wordsinDocs[word][url] = count
         ctr+=1
-        print ctr
-    
+        #print ctr    
     return wordsinDocs, ctr
 
 def tf_idf(wordsinDocs, N):
@@ -83,8 +82,23 @@ def tf_idf(wordsinDocs, N):
             tf = docs[url]
             docs[url] = (1.0 + log(tf))*log(N/df)
     print len(wordsinDocs.keys())
+    return wordsinDocs
+
+def write_tf_idf_to_mongo(wordsinDocs):
+    ctr=1
+    for word, scores in wordsinDocs.iteritems():
+        entry = {}
+        entry['word'] = word
+        entry['scores'] = scores
+        insertDocument(db, entry, 'invIX')
+
+        ctr+=1
+        if ctr%1000 == 0:
+            print ctr
+    print ctr, 'words inserted into MongoDB'
 
 
 wd, N = mongoInvertedIndex(coll)
-result = tf_idf(wd, N)
+wd = tf_idf(wd, N)
+#write_tf_idf_to_mongo(wd)
 

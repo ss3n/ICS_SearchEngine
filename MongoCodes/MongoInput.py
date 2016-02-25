@@ -15,9 +15,9 @@ def rm_stop(counter):
 
 	stopless_dict = {}
 
-	for entry in counter:
-		if entry[0] not in stop_list:
-			stopless_dict[entry[0]] = entry[1]
+	for entry,count in counter.iteritems():
+		if entry not in stop_list and entry.isalpha() and len(entry) <= 45:
+			stopless_dict[entry] = count
 
 	return stopless_dict
 
@@ -48,17 +48,17 @@ class json_provider:
 
 		stream = StringIO(head)
 		head_list = t.tokenizeFile(stream)
-		head_counter = Counter(head_list).most_common()
+		head_counter = Counter(head_list)#.most_common()
 		head_counter = rm_stop(head_counter)
 
 		stream = StringIO(body)
 		body_list = t.tokenizeFile(stream)
-		body_counter = Counter(body_list).most_common()
+		body_counter = Counter(body_list)#.most_common()
 		body_counter = rm_stop(body_counter)
 
 		stream = StringIO(' '.join(anchors))
 		anchor_list = t.tokenizeFile(stream)
-		anchor_counter = Counter(anchor_list).most_common()
+		anchor_counter = Counter(anchor_list)#.most_common()
 		anchor_counter = rm_stop(anchor_counter)
 
 		data_dict = {}
