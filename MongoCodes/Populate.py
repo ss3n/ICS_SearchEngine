@@ -14,15 +14,15 @@ while True:
 	if len(entry) == 0:
 		break
 
-        newdic = {}
-        newdic["url"] = entry.keys()[0]
-        newdic["content"] = entry.values()[0]
+    newdic = {}
+    newdic["url"] = entry.keys()[0]
+    newdic["content"] = entry.values()[0]
 
-        insertDocument(db, newdic)
+    insertDocument(db, newdic)
 
-        ctr+=1
-        if ctr%100==0:
-            print ctr 
+    ctr+=1
+    if ctr%100==0:
+        print ctr 
 print ctr, 'records inserted into database'
 
 
