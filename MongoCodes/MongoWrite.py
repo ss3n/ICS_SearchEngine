@@ -14,8 +14,8 @@ def selectDatabase(client, dbname='irindexer'):
 #db - database object
 #collection - string representing collection
 #record - Record containging JSON-like data
-def insertDocument(db, record=None, collection='fwdindex'):
-    result = db[collection].insert(record, check_keys = False)
+def insertDocument(db, record=None, collection='ir'):
+    result = db[collection].insert(record, check_keys=False)
     return result
 
 #Bulk Inserts many records into Database
