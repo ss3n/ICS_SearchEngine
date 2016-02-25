@@ -7,18 +7,15 @@ def createConnection(host='localhost', port=27017):
     return client
 
 #Select DB : Returns MongoDB DB object   
-def selectdb(client, dbname='irindexer'):
+def selectDatabase(client, dbname='irindexer'):
     db = client[dbname]
     return db
 
 #db - database object
 #collection - string representing collection
 #record - Record containging JSON-like data
-def insertDocument(db, record):
-    if collection not in ['head', 'body', 'anchors']:
-        print 'Invalid collection'
-        return -1
-    result = db[collection].insert_one({url:record})
+def insertDocument(db, record=None, collection='fwdindex'):
+    result = db[collection].insert(record, check_keys = False)
     return result
 
 #Bulk Inserts many records into Database

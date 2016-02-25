@@ -4,6 +4,9 @@ import json
 
 j = json_provider()
 
+ctr = 1
+client = createConnection()
+db = selectDatabase(client)
 while True:
 
 	entry = j.getNext()
@@ -11,5 +14,7 @@ while True:
 	if len(entry) == 0:
 		break
 
-	jsonout = json.dumps(entry)
-	print jsonout
+	print ctr
+	ctr+=1
+
+	result = insertDocument(db, entry)

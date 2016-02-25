@@ -70,3 +70,8 @@ class json_provider:
 		input_dict[url] = data_dict
 
 		return input_dict
+
+
+	def reset(self):
+
+		self.current_urlIX = 0

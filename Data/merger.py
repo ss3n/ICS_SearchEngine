@@ -28,7 +28,15 @@ for i in xrange(5):
 
 			anchors = soup.find_all('a')
 			for i in xrange(len(anchors)):
-				anchors[i] = anchors[i].text.encode('ascii', 'replace')
+				if anchors[i].has_attr('href'):
+					href = anchors[i]['href'].encode('ascii', 'replace')
+					if href[0] == '/':
+						href = url+href
+				else:
+					href = ''
+
+				text = anchors[i].text.encode('ascii', 'replace')
+				anchors[i] = [href, text]
 
 			data_dict = {}
 			data_dict['head'] = head
