@@ -1,3 +1,6 @@
+'''
+Reads info from a huge set of data and inserts the forward indices
+'''
 from MongoInput import *
 from MongoWrite import *
 import json
@@ -5,8 +8,11 @@ import json
 j = json_provider()
 print 'Loading complete... '
 
+FWDIDXCOLL = 'fwdIX100'
+DBNAME = 'irindexer'
+
 client = createConnection()
-db = selectDatabase(client, 'irindexer')
+db = selectDatabase(client, DBNAME)
 
 ctr=0
 while True:
@@ -18,11 +24,12 @@ while True:
         newdic["url"] = entry.keys()[0]
         newdic["content"] = entry.values()[0]
 
-        insertDocument(db, newdic, 'fwdIX100')
+        insertDocument(db, newdic, FWDIDXCOLL)
 
         ctr+=1
         if ctr%1000==0:
             print ctr 
+
 print ctr, 'records inserted into database'
 
 

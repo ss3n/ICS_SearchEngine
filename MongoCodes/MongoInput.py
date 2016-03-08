@@ -1,3 +1,6 @@
+'''
+Reads from the Crawler dump and sends ONE page of text contents at a time to its driver function
+'''
 import sys
 sys.path.insert(0, '../Crawl_processor')
 from utils import *

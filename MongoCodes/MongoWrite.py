@@ -1,3 +1,9 @@
+'''
+Has a set of library functions that can be used for:
+    - Creating a connection to a local (or network) Mongo DB
+    - Selecting a database
+    - Inserting record(s) into a collection
+'''
 from pymongo import MongoClient
 from datetime import datetime
 

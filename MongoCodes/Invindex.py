@@ -38,12 +38,6 @@ def invertedIndex(xyz):
 
     for url,doc in xyz:
         for word, count in doc:
-            # if word is in wordsinDocs:
-                    # 	#wordsinDocs[word] += url
-                    # 	wordsinDocs[word][url] = count
-                    # else:
-                    # 	wordsinDocs[word] = {}
-                    # 	wordsinDocs[word][url] = count
             if word not in wordsinDocs:
                 wordsinDocs[word] = {}
                 wordsinDocs[url] = count
@@ -62,7 +56,6 @@ def invertedIndex(xyz):
 def mongoInvertedIndex(coll):
     ctr=0
     wordsinDocs = {}
-    #coll.find()
     for page in coll.find():
         url, doc = page['url'], page['content']['body']
 
@@ -71,7 +64,6 @@ def mongoInvertedIndex(coll):
                 wordsinDocs[word] = {}
             wordsinDocs[word][url] = count
         ctr+=1
-        #print ctr    
     return wordsinDocs, ctr
 
 def tf_idf(wordsinDocs, N):
