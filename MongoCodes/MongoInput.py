@@ -1,4 +1,5 @@
 '''
+
 Reads from the Crawler dump and sends ONE page of text contents at a time to its driver function
 '''
 import sys
@@ -8,11 +9,11 @@ from utils import *
 import cPickle as pickle
 from cStringIO import StringIO
 from collections import Counter
-
+from VitalConstants import *
 
 def rm_stop(counter):
 
-	stop_file = open('../Crawl_processor/stop_words.txt', 'r')
+	stop_file = open(CRAWLDUMP_DIR  + STOPWORDS_FILE, 'r')
 	stop_list = stop_file.read().split('\n')
 	stop_file.close()
 
@@ -44,7 +45,7 @@ def get_count_positions(word_counter, word_list):
 
 class json_provider:
 
-	def __init__(self, fileName = '../Data/out100.pkl'):
+	def __init__(self, fileName = PROCESSEDCRAWLDUMP_DIR + PROCESSEDCRAWLDUMP_FILENAME):
 
 		self.html_dict = pickle.load(open(fileName, 'r'))
 		self.urls = self.html_dict.keys()

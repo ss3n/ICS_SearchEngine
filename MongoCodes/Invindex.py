@@ -26,10 +26,11 @@
 from numpy import log10 as log
 from pymongo import MongoClient
 from MongoWrite import *
+from VitalConstants import *
 
 client=createConnection()
 db = selectDatabase(client)
-coll = db['fwdIX100']
+coll = db[FWDIDXCOLL]
 
 def invertedIndex(xyz):
     wordsinDocs = {}
@@ -82,7 +83,7 @@ def write_tf_idf_to_mongo(wordsinDocs):
         entry = {}
         entry['word'] = word
         entry['scores'] = scores
-        insertDocument(db, entry, 'invIX100')
+        insertDocument(db, entry, INVIDXCOLL)
 
         ctr+=1
         if ctr%1000 == 0:
