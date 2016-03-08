@@ -18,7 +18,7 @@ while True:
         newdic["url"] = entry.keys()[0]
         newdic["content"] = entry.values()[0]
 
-        insertDocument(db, newdic, 'fwdIX')
+        insertDocument(db, newdic, 'fwdIX100')
 
         ctr+=1
         if ctr%1000==0:

@@ -29,7 +29,7 @@ from MongoWrite import *
 
 client=createConnection()
 db = selectDatabase(client)
-coll = db['fwdIX']
+coll = db['fwdIX100']
 
 def invertedIndex(xyz):
     wordsinDocs = {}
@@ -90,7 +90,7 @@ def write_tf_idf_to_mongo(wordsinDocs):
         entry = {}
         entry['word'] = word
         entry['scores'] = scores
-        insertDocument(db, entry, 'invIX')
+        insertDocument(db, entry, 'invIX100')
 
         ctr+=1
         if ctr%1000 == 0:
@@ -100,5 +100,5 @@ def write_tf_idf_to_mongo(wordsinDocs):
 
 wd, N = mongoInvertedIndex(coll)
 wd = tf_idf(wd, N)
-#write_tf_idf_to_mongo(wd)
+write_tf_idf_to_mongo(wd)
 

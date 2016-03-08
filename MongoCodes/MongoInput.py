@@ -22,9 +22,26 @@ def rm_stop(counter):
 	return stopless_dict
 
 
+def get_count_positions(word_counter, word_list):
+
+	word_info = {}
+
+	for word,count in word_counter.iteritems():
+		info_dict = {}
+		info_dict['count'] = count
+		info_dict['positions'] = []
+		word_info[word] = info_dict
+
+	for i, word in enumerate(word_list):
+		if word in word_info:
+			word_info[word]['positions'] += [i]
+
+	return word_info
+
+
 class json_provider:
 
-	def __init__(self, fileName = '../Data/out.pkl'):
+	def __init__(self, fileName = '../Data/out100.pkl'):
 
 		self.html_dict = pickle.load(open(fileName, 'r'))
 		self.urls = self.html_dict.keys()
@@ -50,21 +67,38 @@ class json_provider:
 		head_list = t.tokenizeFile(stream)
 		head_counter = Counter(head_list)#.most_common()
 		head_counter = rm_stop(head_counter)
+		head_info = get_count_positions(head_counter, head_list)
 
 		stream = StringIO(body)
 		body_list = t.tokenizeFile(stream)
 		body_counter = Counter(body_list)#.most_common()
 		body_counter = rm_stop(body_counter)
+		body_info = get_count_positions(body_counter, body_list)
 
-		stream = StringIO(' '.join(anchors))
-		anchor_list = t.tokenizeFile(stream)
-		anchor_counter = Counter(anchor_list)#.most_common()
-		anchor_counter = rm_stop(anchor_counter)
+		# stream = StringIO(' '.join(anchors))
+		# anchor_list = t.tokenizeFile(stream)
+		# anchor_counter = Counter(anchor_list)#.most_common()
+		# anchor_counter = rm_stop(anchor_counter)
+		# anchor_info = get_count_positions(anchor_counter, anchor_list)
 
+		anchor_dict = {}
+		for anchor in anchors:
+			link = anchor[0]
+			text = anchor[1]
+
+			stream = StringIO(text)
+			anchor_list = t.tokenizeFile(stream)
+			anchor_counter = Counter(anchor_list)
+			anchor_counter = rm_stop(anchor_counter)
+			anchor_info = get_count_positions(anchor_counter, anchor_list)
+
+			anchor_dict[link] = anchor_info
+
+		
 		data_dict = {}
-		data_dict['head'] = head_counter
-		data_dict['body'] = body_counter
-		data_dict['anchors'] = anchor_counter
+		data_dict['head'] = head_info
+		data_dict['body'] = body_info
+		data_dict['anchors'] = anchor_dict
 
 		input_dict = {}
 		input_dict[url] = data_dict
