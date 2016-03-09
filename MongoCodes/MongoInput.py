@@ -3,13 +3,13 @@
 Reads from the Crawler dump and sends ONE page of text contents at a time to its driver function
 '''
 import sys
-sys.path.insert(0, '../Crawl_processor')
+from VitalConstants import *
+sys.path.insert(0, CRAWLDUMP_DIR)
 from utils import *
 
 import cPickle as pickle
 from cStringIO import StringIO
 from collections import Counter
-from VitalConstants import *
 
 def rm_stop(counter):
 
@@ -87,8 +87,8 @@ class json_provider:
 
 		anchor_dict = {}
 		for anchor in anchors:
-			link = anchor[0]
-			text = anchor[1]
+                        link = anchor[0]
+                        text = anchor[1]
 
 			stream = StringIO(text)
 			anchor_list = t.tokenizeFile(stream)
@@ -113,3 +113,7 @@ class json_provider:
 	def reset(self):
 
 		self.current_urlIX = 0
+
+j = json_provider()
+print j
+nx = j.getNext()
