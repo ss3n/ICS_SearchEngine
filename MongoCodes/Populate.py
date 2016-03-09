@@ -1,6 +1,33 @@
 '''
 Reads info from a huge set of data and inserts the forward indices
+Forward Index Format:
+{
+    "url" : <url>
+    "content" : <content> 
+    }
+
+    <content>
+    {
+        "body" : <body>
+        "head" : <head>
+        "anchors" : <anchors>
+        "anchortext" : <anchortext>
+    }
+
+    <body> and <head>
+    {
+        "word" : { "count": <count
+                    "positions" : [<positions>] } 
+    }
+
+    <anchortext>
+    {
+        "incoming" : (url, textcontent)
+        "outgoing" : <outgoingurl>
+    }
+    
 '''
+
 import re
 from MongoInput import *
 from MongoWrite import *
@@ -44,8 +71,9 @@ def expandAnchorLink(url, parent):
 
     elif url[0] == '#':
         return parent+url
-
-#    elif url[:3] == '../':
+    elif len(url) == 1 and url[0]=='/':
+        loc = findSlashes(parent)
+        return parent[:loc[0]+1]
     else:
         levelsUp = url.count('../')+1
         while url.startswith('../'):
@@ -58,7 +86,9 @@ def expandAnchorLink(url, parent):
         return ans
 
 
-
+'''
+If URL contains an 'a href' or a 'mailto' or points to a non webpage resource, return False
+'''
 def cleanUrl(url):
     if 'href' in url:
         return False
@@ -98,12 +128,18 @@ while True:
     if ctr%1000==0:
         print ctr 
 
+'''
+Functions to obtain data of a link and its parent from the data store. 
+Currently the datastore is a dictionary.
+To use a live database instead of a dictionary, modify the functions below
+'''
 def linkPresent(link):
     return link in dataStore
 def retrieveContent(link):
     return dataStore[link]
+def updateContent(link, dat):
+    dataStore[link] = dat
 
-print linkPresent('http://store.apple.com')
 #Iteration 2 - Look at each URL, see its anchor tags, resolve paths if any and update anchor info of each
 for parent, content in dataStore.iteritems():
     anc = content['anchors']
@@ -115,26 +151,31 @@ for parent, content in dataStore.iteritems():
         else:
             link = expandAnchorLink(i, parent)
 
+        #If link is same as parent, don't add as an incoming or outgoing link
+        if link == parent:
+            continue
+
+
+        #Iff link is part of the crawled set of URLs, set incoming and outgoing to parent and link appropriately
         if linkPresent(link):
             dat = retrieveContent(link)
             if 'anchortext' not in dat:
                 dat['anchortext']={'incoming':[], 'outgoing':[]}
-                dat['anchortext']['incoming'].append((link, anc[i]))
-            if 'anchortext' not in dataStore[parent]:
-                dat['anchortext']={'incoming':[], 'outgoing':[]}
-                dat['anchortext']['outgoing'].append((link, anc[i]))
-                
+            dat['anchortext']['incoming'].append((parent, anc[i]))
+            updateContent(link, dat)
 
-
+            dat = retrieveContent(parent)
+            if 'anchortext' not in dat:
+                dat['anchortext'] = {'incoming':[], 'outgoing':[]}
+            dat['anchortext']['outgoing'].append(link)
+            updateContent(parent, dat)
     
 #Iteration 3 - Insert each URL, content pair into the databse
-if False:
+for url, content in dataStore.iteritems():
     newdic={}
-    newdic["url"] = standardize_url(entry.keys()[0])
-    newdic["content"] = entry.values()[0]
-#        insertDocument(db, newdic, FWDIDXCOLL)
+    newdic["url"] = url
+    newdic["content"] = content
+    insertDocument(db, newdic, FWDIDXCOLL)
 
 print ctr, 'records inserted into database'
-
-
 
