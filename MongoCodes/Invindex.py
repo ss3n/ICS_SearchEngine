@@ -3,20 +3,20 @@
 # wordsinDocs is a dictionary containing word as key and a dictionary of URL names:freq containig that word
 
 # def invertedIndex(xyz,imp_words[]):
-# 	wordsinDocs={}
-# 	for word in imp_words: #traverse through each word
-# 		for document in xyz: #traverse through each document and check for the word  
-# 			if word in value of document:  #traverse through the dictionary containing word entries inside that URL 
-# 				wordsinDocs[word]+=document
+#   wordsinDocs={}
+#   for word in imp_words: #traverse through each word
+#       for document in xyz: #traverse through each document and check for the word  
+#           if word in value of document:  #traverse through the dictionary containing word entries inside that URL 
+#               wordsinDocs[word]+=document
 
 # #Swarun's version
 
-# 	for doc in documents:
-# 		for word in doc:
-# 			if word is already there in wordDictionary:
-# 				wordDictionary[urls] += url
-# 			else:
-# 				wordDictionary[urls] = url
+#   for doc in documents:
+#       for word in doc:
+#           if word is already there in wordDictionary:
+#               wordDictionary[urls] += url
+#           else:
+#               wordDictionary[urls] = url
 
 ###########
 ## FINAL ##

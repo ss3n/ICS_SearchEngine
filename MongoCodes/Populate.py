@@ -16,9 +16,9 @@ db = selectDatabase(client, DBNAME)
 
 ctr=0
 while True:
-	entry = j.getNext()
-	if len(entry) == 0:
-		break
+    entry = j.getNext()
+    if len(entry) == 0:
+        break
 
         newdic = {}
         newdic["url"] = entry.keys()[0]
