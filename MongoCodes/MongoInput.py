@@ -87,14 +87,15 @@ class json_provider:
 
         anchor_dict = {}
         for anchor in anchors:
-                        link = anchor[0]
-                        text = anchor[1]
+            link = anchor[0]
+            text = anchor[1]
 
             stream = StringIO(text)
             anchor_list = t.tokenizeFile(stream)
             anchor_counter = Counter(anchor_list)
             anchor_counter = rm_stop(anchor_counter)
             anchor_info = get_count_positions(anchor_counter, anchor_list)
+        #    print anchor_info
 
             anchor_dict[link] = anchor_info
 
@@ -111,9 +112,4 @@ class json_provider:
 
 
     def reset(self):
-
         self.current_urlIX = 0
-
-j = json_provider()
-print j
-nx = j.getNext()
