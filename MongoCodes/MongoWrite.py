@@ -6,6 +6,7 @@ Has a set of library functions that can be used for:
 '''
 from pymongo import MongoClient
 from datetime import datetime
+from VitalConstants import *
 
 #Create Connection : returns client with connection to local MongoClient
 def createConnection(host='localhost', port=27017):
@@ -13,7 +14,7 @@ def createConnection(host='localhost', port=27017):
     return client
 
 #Select DB : Returns MongoDB DB object   
-def selectDatabase(client, dbname='irindexer'):
+def selectDatabase(client, dbname=DBNAME):
     db = client[dbname]
     return db
 
