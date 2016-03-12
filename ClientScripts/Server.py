@@ -16,14 +16,14 @@ reqdJson['items'] = []
 item = {}
 item['itemheading'] = 'Google'
 item['itemURL'] = 'http://www.google.com'
-item['itemcontent'] = 'Google Mein Doodle Baby'
+item['itemcontent'] = 'Google Mein Doodle Baby Machine Google Mein Doodle Baby Google Mein Doodle Baby learning Google Mein Doodle Baby Google Mein Doodle Baby machine Google Mein Doodle Baby Learning Google Mein Doodle Baby machine learning Google Mein Doodle Baby Google Mein Doodle Baby '
 reqdJson['items'].append(item)
 
 
 item = {}
 item['itemheading'] = 'Bing'
 item['itemURL'] = 'http://www.bing.com'
-item['itemcontent'] = 'Bing LOL'
+item['itemcontent'] = 'Bing LOL machine Bing LOLBing LOLBing LOLBing LOLBing LOLBing LOLBing LOL learning machine learning Bing LOLBing LOLBing LOLBing LOLBing LOLBing LOLBing LOLBing LOLBing LOLBing LOLBing LOLBing LOLBing LOLBing LOLBing LOLBing LOLBing LOLBing LOLBing LOLBing LOLBing LOLBing LOLBing LOLBing LOLBing LOLBing LOLBing LOL'
 reqdJson['items'].append(item)
 
 
