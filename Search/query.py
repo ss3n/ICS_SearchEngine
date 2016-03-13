@@ -3,7 +3,11 @@ from pymongo import MongoClient
 from MongoWrite import *
 import operator
 from numpy import log2 as log
-
+'''
+TODO
+- Integrate Moriarty with Arjun's php server
+- Integrate PageRank into Sherlock?
+'''
 ###############################
 # class for our search engine #
 ###############################
@@ -13,7 +17,7 @@ class Sherlock:
         Class for handling queries and performing search: outputs list of <k> most relevant urls
     '''
 
-    def __init__(self, search_size = 10):
+    def __init__(self, search_size = 5):
         self.client=createConnection()
         self.db = selectDatabase(self.client)
         self.search_size = search_size
@@ -52,7 +56,7 @@ class Sherlock:
 
     def searchQuery(self, query):
         '''
-            Returns a list of urls ranked by relevance
+            Returns a list of 2-tuples (<url>, <score>) ranked by relevance
         '''
         terms = query.split()
 
@@ -74,7 +78,6 @@ class Sherlock:
             relevance_dict[url] = value
 
         ranking = sorted(relevance_dict.items(), key=operator.itemgetter(1), reverse=True)
-        ranking = [rank[0].encode('ascii') for rank in ranking]
         return ranking
 
 
@@ -83,6 +86,7 @@ class Sherlock:
             Returns top <search_size> search results as a list of urls in ranked order
         '''
         results = self.searchQuery(query)
+        results = [result[0].encode('ascii') for result in results]
         return results[:self.search_size]
 
 
@@ -94,7 +98,7 @@ class Moriarty:
     '''
         Class that takes in a query and returns top <k> search results from Google search
     '''
-    def __init__(self, search_size = 10):
+    def __init__(self, search_size = 5):
         self.search_size = search_size
 
     def search(self, query):
@@ -103,9 +107,9 @@ class Moriarty:
         '''
 
 
-#########################
-# Thou shalt be judged! #
-#########################
+########################
+# Thou shalt be judged #
+########################
 
 def NDCG(ideal, results):
     '''
