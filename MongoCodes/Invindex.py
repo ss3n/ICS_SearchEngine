@@ -55,6 +55,7 @@ def invertedIndex(fwd_entry):
     inv_anchor = {}
 
     for word, fwd_details in content['body'].iteritems():
+        inv_content = {}
         inv_content['url'] = url
         inv_content['value'] = fwd_details['count']
         inv_content['positions'] = fwd_details['positions']
@@ -62,20 +63,25 @@ def invertedIndex(fwd_entry):
         inv_body[word] = inv_content
 
     for word, fwd_details in content['head'].iteritems():
+        inv_content = {}
         inv_content['url'] = url
         inv_content['value'] = fwd_details['count']
         inv_content['positions'] = fwd_details['positions']
 
         inv_head[word] = inv_content
 
-    for anchor_in in content['anchortext']['incoming']:
-        text = anchor_in[1]
-        for word, fwd_details in text.iteritems():
-            inv_content['url'] = url
-            inv_content['value'] = fwd_details['count']
-            inv_content['positions'] = fwd_details['positions']
+    try:
+        for anchor_in in content['anchortext']['incoming']:
+            text = anchor_in[1]
+            for word, fwd_details in text.iteritems():
+                inv_content = {}
+                inv_content['url'] = url
+                inv_content['value'] = fwd_details['count']
+                inv_content['positions'] = fwd_details['positions']
 
-            inv_anchor[word] = inv_content
+                inv_anchor[word] = inv_content
+    except KeyError:
+        1
 
     return {'body': inv_body, 'head': inv_head, 'anchor': inv_anchor}
 
@@ -112,7 +118,7 @@ def tf(coll):
         for word, content in page_inv_anchor.iteritems():
             url = content['url']
 
-            if word not in inv_body:
+            if word not in inv_anchor:
                 inv_anchor[word] = {}
             inv_anchor[word][url] = content
 
@@ -124,7 +130,7 @@ def tf_idf(invIndex, N):
     inv_head = invIndex['head']
     inv_anchor = invIndex['anchor']
 
-    for word, content in inv_body:
+    for word, content in inv_body.iteritems():
         df = len(content.keys())
 
         for url in content.keys():
@@ -132,7 +138,7 @@ def tf_idf(invIndex, N):
             content[url]['value'] = (1.0 + log(tf))*log(N/df)
         inv_body[word] = content
 
-    for word, content in inv_head:
+    for word, content in inv_head.iteritems():
         df = len(content.keys())
 
         for url in content.keys():
@@ -140,7 +146,7 @@ def tf_idf(invIndex, N):
             content[url]['value'] = (1.0 + log(tf))*log(N/df)
         inv_head[word] = content
 
-    for word, content in inv_anchor:
+    for word, content in inv_anchor.iteritems():
         df = len(content.keys())
 
         for url in content.keys():
@@ -156,7 +162,7 @@ def write_tf_idf_to_mongo(invIndex):
     inv_head = invIndex['head']
     inv_anchor = invIndex['anchor']
     
-    ctr=1
+    ctr=0
 
     for word, content in inv_body.iteritems():
         entry = {}
@@ -169,7 +175,7 @@ def write_tf_idf_to_mongo(invIndex):
             print ctr
     print ctr, 'body words inserted into MongoDB'
 
-    ctr=1
+    ctr=0
 
     for word, content in inv_head.iteritems():
         entry = {}
@@ -182,7 +188,7 @@ def write_tf_idf_to_mongo(invIndex):
             print ctr
     print ctr, 'head words inserted into MongoDB'
 
-    ctr=1
+    ctr=0
 
     for word, content in inv_anchor.iteritems():
         entry = {}
@@ -201,6 +207,10 @@ db = selectDatabase(client)
 coll = db[FWDIDXCOLL]
 
 invIndex, N = tf(coll)
-invIndex = tf_idf(invIndex, N)
-write_tf_idf_to_mongo(invIndex)
+print 'Term frequencies calculated'
 
+invIndex = tf_idf(invIndex, N)
+print 'TF-IDF for all terms calculated'
+
+write_tf_idf_to_mongo(invIndex)
+print 'Inverted index inserted into MongoDB'

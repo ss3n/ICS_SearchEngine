@@ -4,7 +4,6 @@ DBNAME = 'irindexer'
 CRAWLDUMP_DIR  = '../Crawl_processor/'
 STOPWORDS_FILE = 'stop_words.txt'
 PROCESSEDCRAWLDUMP_FILENAME  = 'out.pkl'
-#PROCESSEDCRAWLDUMP_FILENAME  = 'out.pkl'
 PROCESSEDCRAWLDUMP_DIR = '../Data/'
 
 URL_DICT_KEY = 'url'
