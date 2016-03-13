@@ -4,6 +4,10 @@ from MongoWrite import *
 import operator
 from numpy import log2 as log
 
+###############################
+# class for our search engine #
+###############################
+
 class Sherlock:
     '''
         Class for handling queries and performing search: outputs list of <k> most relevant urls
@@ -46,9 +50,9 @@ class Sherlock:
         return relevance_dict
 
 
-    def search(self, query):
+    def searchQuery(self, query):
         '''
-            Returns a list of 2-tuples: (<url>, <relevance_score>)
+            Returns a list of urls ranked by relevance
         '''
         terms = query.split()
 
@@ -70,10 +74,21 @@ class Sherlock:
             relevance_dict[url] = value
 
         ranking = sorted(relevance_dict.items(), key=operator.itemgetter(1), reverse=True)
-        ranking = [rank[0].encode('ascii') for rank in ranking[:self.search_size]]
+        ranking = [rank[0].encode('ascii') for rank in ranking]
         return ranking
 
 
+    def search(self, query):
+        '''
+            Returns top <search_size> search results as a list of urls in ranked order
+        '''
+        results = self.searchQuery(query)
+        return results[:self.search_size]
+
+
+####################################
+# class for Google's search engine #
+####################################
 
 class Moriarty:
     '''
@@ -87,6 +102,10 @@ class Moriarty:
             sorted by descending order of relevance
         '''
 
+
+#########################
+# Thou shalt be judged! #
+#########################
 
 def NDCG(ideal, results):
     '''
