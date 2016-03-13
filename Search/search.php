@@ -75,7 +75,7 @@ $searchquery=$_POST['searchbox'];
 			
 			//The googleURL is the address at which Google Ajax API is located
 			//$googleURL="https://www.googleapis.com/customsearch/v1?key=AIzaSyARRvhnIx6GhTYAssClqi-Befnx958T4ms&q=";
-			$googleURL="https://www.googleapis.com/customsearch/v1?key=AIzaSyC0NNGclMTrbs0zcdnfXVDE2VJiGuVj5TY&cx=004495725010310928265:i8_5au6lyco&fileType=HTML&q=";
+			$googleURL="https://www.googleapis.com/customsearch/v1?key=AIzaSyC0NNGclMTrbs0zcdnfXVDE2VJiGuVj5TY&cx=004495725010310928265:i8_5au6lyco&q=";
 
 
 			//$googleURL="http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=";
@@ -100,14 +100,30 @@ $searchquery=$_POST['searchbox'];
 				//just fetch items[link] and print it
 			if ($google_results_for_python=="")
 				{
-				$google_results_for_python=$google_results_for_python.$iteminstance['link'];
+					$non_html_flag=preg_match('#css|js|bmp|gif|jpe?g|ico|png|tiff?|mid|mp2|mp3|mp4|txt|gz|py
+												|wav|avi|mov|mpeg|ram|m4v|mkv|ogg|ogv|pdf
+												|ps|eps|tex|ppt|pptx|doc|docx|xls|xlsx|names|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso|epub|dll|cnf|tgz|sha1
+												|thmx|mso|arff|rtf|jar|csv
+												|rm|smil|wmv|swf|wma|zip|rar|gz#',$iteminstance['link']);
+					if(!$non_html_flag)
+					{
+						$google_results_for_python=$google_results_for_python.$iteminstance['link'];
+						$i+=1;
+					}
 				}
 			else
 				{
-				$google_results_for_python=$google_results_for_python."###".$iteminstance['link'];
+					$non_html_flag=preg_match('#css|js|bmp|gif|jpe?g|ico|png|tiff?|mid|mp2|mp3|mp4|txt|gz|py
+												|wav|avi|mov|mpeg|ram|m4v|mkv|ogg|ogv|pdf
+												|ps|eps|tex|ppt|pptx|doc|docx|xls|xlsx|names|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso|epub|dll|cnf|tgz|sha1
+												|thmx|mso|arff|rtf|jar|csv
+												|rm|smil|wmv|swf|wma|zip|rar|gz#',$iteminstance['link']);
+					if(!$non_html_flag)
+					{
+						$google_results_for_python=$google_results_for_python."###".$iteminstance['link'];
+						$i+=1;
+					}
 				}
-
-				$i+=1;
 
 			}
 
@@ -126,7 +142,7 @@ $searchquery=$_POST['searchbox'];
 			//{
 				//print_r("Successfully sent google results to python");
 			//}
-			
+
 			///////Google results code ends here/////////////
 
 			?>
