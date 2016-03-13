@@ -3,15 +3,15 @@ from pymongo import MongoClient
 from MongoWrite import *
 import operator
 
-class sherlock:
+class Sherlock:
     '''
         Class for handling queries and performing search: outputs list of <k> most relevant urls
     '''
 
-    def __init__(self):
+    def __init__(self, search_size = 10):
         self.client=createConnection()
         self.db = selectDatabase(self.client)
-
+        self.search_size = search_size
 
     def retrieve(self, terms, INVCOLL):
         coll = self.db[INVCOLL]
@@ -69,4 +69,19 @@ class sherlock:
             relevance_dict[url] = value
 
         ranking = sorted(relevance_dict.items(), key=operator.itemgetter(1), reverse=True)
+        ranking = [rank[0].encode('ascii') for rank in ranking[:self.search_size]]
         return ranking
+
+
+
+class Moriarty:
+    '''
+        Class that takes in a query and returns top <k> search results from Google search
+    '''
+    def __init__(self, search_size = 10):
+        self.search_size = search_size
+
+    def search(self, query):
+        '''function takes in a string query and returns a list of <k> Google search results
+            sorted by descending order of relevance
+        '''
