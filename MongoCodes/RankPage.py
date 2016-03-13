@@ -1,16 +1,19 @@
 from __future__ import division 
-x= {} #x[3] = [4] => Page 4 has a link to 3. i.e Page 3 has a backlink from 4 
-x[1] = [2, 3, 4] 
-x[2] = [3, 4] 
-x[3] = [4] 
-x[4] = [] 
+from VitalConstants import *
+from MongoWrite import createConnection, selectDatabase
 
-numlinks = 4 
-d = 0.85 
-THRESHOLD = 0.001
+incoming= {} #incoming[3] = [4] => Page 4 has a link to 3. i.e Page 3 has a backlink from 4 
+incoming[1] = [3]
+incoming[2] = [1]
+incoming[3] = [4, 1, 2]
+incoming[4] = []
 
-outgoing = {1:0, 2:1, 3:2, 4:3} 
-''' for each element in corpus: PR(A) = (1-d)/numlink + sigma(PR(Ci) / T(Ci) ''' 
+outgoing = {1:2, 2:1, 3:1, 4:1}
+
+DAMPING = 0.85
+d = DAMPING 
+THRESHOLD = 0.1
+
 def stable(currentPageRank, pastPageRank): 
     diff = [abs(currentPageRank[i] - pastPageRank[i]) for i in pastPageRank.keys()] 
     print max(diff)
@@ -18,25 +21,76 @@ def stable(currentPageRank, pastPageRank):
         return True 
     return False
 
-currentPageRank = {i:1 for i in x.keys()}
-pastPageRank = {i:0 for i in x.keys()}
+client = createConnection()
+db = selectDatabase(client, DBNAME)
+coll = db[FWDIDXCOLL]
 
-it = 0
-while not stable(currentPageRank, pastPageRank):
-    pastPageRank = currentPageRank.copy()
-    for page in x.keys():
-        currentPageRank[page] = (1-d)/numlinks
-        y = x.keys()
-        y.remove(page)
-        some = [pastPageRank[i]/outgoing[i] if outgoing[i]>0 else 0 for i in y]
-        currentPageRank[page]+=d*sum(some)
-    it +=1
-    print it
-print pastPageRank 
-print currentPageRank 
-if page in x.keys():
-    y = x.keys()
-    y.remove(page)
-    print y
-else:
-    print 'WTF'
+
+'''
+Returns a dictionary of outgoing links
+outoing [<url] = <no of outgoing links> 
+
+Example:
+Where url -> url1, url2, url3
+outgoing[url] = 3
+
+Returns a dictionary of backlinks
+incoming [ <url> ] = [url1, url2, url3] 
+
+Example:
+incoming ['google.com'] = ['yahoo.com', 'bing.com', 'aol.com']
+where Yahoo, Bing & Aol point to Google.com
+'''
+def obtainIncomingAndOutgoingLinks():
+    outgoing = {}
+    incoming = {}
+
+    cursor = coll.find()
+    for doc in cursor: #For each document in the collection
+        url = doc[URL_DICT_KEY]     #Obtain URL from the document
+
+        #If the document does not have the anchortext attribute at all, then it has no incoming or outgoing links
+        if doc[CONTENT_DICT_KEY][ANCHORS_DICT_KEY]:
+            # Obtain the incoming & Outgoing dictionaries
+            out = doc[CONTENT_DICT_KEY][ANCHORS_DICT_KEY][ANCHORS_OUTGOING_DICT_KEY]
+            inc = doc[CONTENT_DICT_KEY][ANCHORS_DICT_KEY][ANCHORS_INCOMING_DICT_KEY]
+
+            #If either inc or out is empty, initialize the appropriate dictionaries with empty lists or length=0
+            if out == []:
+                outgoing[url] = 0
+            else:
+                outgoing[url] = len(out)
+
+            if inc == []:
+                incoming[url]=[]
+            else:
+                incoming[url] = inc.keys()
+        else: # Case where there are no Incoming or Outgoing links
+            outgoing[url] = 0
+            incoming[url] = []
+    return incoming, outgoing
+
+
+
+incoming, outgoing = obtainIncomingAndOutgoinLinks()
+
+''' for each element in corpus: PR(A) = (1-d) + sigma(PR(Ci) / T(Ci) ''' 
+
+
+def main():
+    currentPageRank = {i:1 for i in incoming.keys()}
+    pastPageRank = {i:0 for i in incoming.keys()}
+
+    it = 0
+    while not stable(currentPageRank, pastPageRank):
+        pastPageRank = currentPageRank.copy()
+        for page in incoming.keys():
+            currentPageRank[page] = (1-d)
+            some = [pastPageRank[i]/outgoing[i] if outgoing[i]>0 else 0 for i in incoming[page]]
+            currentPageRank[page]+=d*sum(some)
+        it +=1
+        print 'Iteration #', it
+
+    print currentPageRank 
+
+main()
