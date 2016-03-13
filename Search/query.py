@@ -45,7 +45,7 @@ class sherlock:
         return relevance_dict
 
 
-    def searchQuery(self, query):
+    def search(self, query):
         '''
             Returns a list of 2-tuples: (<url>, <relevance_score>)
         '''
@@ -56,7 +56,7 @@ class sherlock:
         anchor_search = self.retrieve(terms, INVANCHORCOLL)
 
         all_urls = list(set(head_search.keys() + body_search.keys() + anchor_search.keys()))
-        
+
         relevance_dict = {}
         for url in all_urls:
             value = 0
