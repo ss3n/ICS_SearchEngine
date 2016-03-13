@@ -2,6 +2,7 @@ from SearchConstants import *
 from pymongo import MongoClient
 from MongoWrite import *
 import operator
+from numpy import log2 as log
 
 class Sherlock:
     '''
@@ -85,3 +86,36 @@ class Moriarty:
         '''function takes in a string query and returns a list of <k> Google search results
             sorted by descending order of relevance
         '''
+
+
+def NDCG(ideal, results):
+    '''
+        Given a list of ideal and obtained result URLs in descending rank, calculates norm cumulative gain
+        NOTE: 1st argument is ideal ranking, 2nd is obtained ranking
+    '''
+
+    n = len(ideal)
+    assert (n == len(results)), 'Ideal results and obtained results must be of same length'
+
+    ideal_relevance = n * [0]
+    for i in xrange(n):
+        ideal_relevance[i] = n-i
+
+    obtained_relevance = n * [0]
+    for i in xrange(n):
+        try:
+            ideal_ix = ideal.index(results[i])
+            obtained_relevance[i] = ideal_relevance[ideal_ix]
+
+        except 'ValueError':
+            True
+    
+    idcg = ideal_relevance[0]
+    for i in xrange(1,n):
+        idcg += ideal_relevance[i]/log(i+1)
+
+    dcg = obtained_relevance[0]
+    for i in xrange(1,n):
+        dcg += obtained_relevance[i]/log(i+1)
+    
+    return dcg/idcg
