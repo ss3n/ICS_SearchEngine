@@ -126,7 +126,7 @@ def NDCG(ideal, results):
     # print results
 
     n = len(ideal)
-    assert (n == len(results)), 'Ideal results and obtained results must be of same length'
+    assert (n == len(results)), 'Ideal results and obtained results must be of same length'+str(n)+' '+str(len(results))
 
     ideal_relevance = n * [0]
     for i in xrange(n):
@@ -150,4 +150,4 @@ def NDCG(ideal, results):
         dcg += obtained_relevance[i]/log(i+1)
     
     # print idcg, dcg
-    return dcg#/idcg
+    return dcg/idcg

@@ -15,12 +15,13 @@ import urllib
 '''
 
 def commenceBattle(querystring, googleresults):
-	holmes = Sherlock(3)
+	print 'Searching for : ', querystring
+	holmes = Sherlock()
 	sherlockResult = holmes.search(querystring)
 	print sherlockResult
 	print googleresults
 
-	print NDCG(sherlockResult, googleresults)
+	print NDCG(googleresults, sherlockResult)
 
 def getGoogleResults(googleResultsString):
 	spl = googleResultsString.split(GOOGLE_RESULTS_DELIM)
@@ -30,7 +31,9 @@ def getGoogleResults(googleResultsString):
 def main():
 	querystring = (sys.argv[1]).lower()
 	querystring = urllib.unquote(querystring)
+	querystring = querystring.replace('+',' ')
 	googleresults = getGoogleResults(sys.argv[2])
+
 
 	print querystring
 	print
