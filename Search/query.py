@@ -3,6 +3,7 @@ from pymongo import MongoClient
 from MongoWrite import *
 import operator
 from numpy import log2 as log
+from VitalConstants import *
 '''
 TODO
 - Integrate Moriarty with Arjun's php server
@@ -88,6 +89,52 @@ class Sherlock:
         results = self.searchQuery(query)
         results = [result[0].encode('ascii') for result in results]
         return results[:self.search_size]
+
+    def findRelevantSnippet(self, query, snippets):
+        def findRelevantSnip(query, snip):
+            if len(snip) < 200:
+                return 0, len(snip)
+            someWordMatched = False
+            for word in query.split():
+                loc = snip.find(word)
+                sniplen = len(snip)
+                if loc == -1:
+                    continue
+                else:
+                    start = max(0, loc-50)
+                    finish = min(sniplen, loc+150)
+                    return start, finish
+
+            if not someWordMatched:
+                return 0, 200
+
+        query = query.lower()
+        result = []
+        for snippet in snippets:
+            snip = snippet.lower()
+            start, finish = findRelevantSnip(query, snip)
+            result.append(snippet[start:finish])
+
+        return result
+
+
+    def getSnippets(self, query, searchResults):
+        def getSnippetForUrl(url):
+            body = ''
+            for entry in coll.find({"url":url}, {"body":1}):
+                body = entry['body']
+            return body
+
+        resultSnippets = []
+        coll = self.db[SNIPPETS_COLL]
+
+        for url in searchResults:
+            snippet = getSnippetForUrl(url)            
+            resultSnippets.append(snippet)
+
+        result = self.findRelevantSnippet(query, resultSnippets)
+
+        return result
 
 
 ####################################

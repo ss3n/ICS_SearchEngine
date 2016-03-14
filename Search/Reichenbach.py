@@ -16,18 +16,20 @@ from bs4 import BeautifulSoup
 '''
 
 
-def getResultsJson(sherlockResult):
+def getResultsJson(sherlockResult, resultSnippets):
 	def getTitle(url):
 		url = 'http://'+url
 		soup = BeautifulSoup(urllib2.urlopen(url))
 		return soup.title.string
 
 	resultsJson = {'items':[]}
+	it = 0
 	for url in sherlockResult:
 		item = {}
 		item['itemheading'] = getTitle(url)
 		item['itemURL'] = url
-		item['itemcontent'] = ''
+		item['itemcontent'] = resultSnippets[it]
+		it+=1
 		resultsJson['items'].append(item)
 	return resultsJson
 
@@ -39,10 +41,10 @@ def commenceBattle(querystring, googleresults):
 	print 
 	holmes = Sherlock()
 	sherlockResult = holmes.search(querystring)
+	resultSnippets = holmes.getSnippets(querystring, sherlockResult)
 
 	print NDCG(googleresults, sherlockResult)
-
-	return getResultsJson(sherlockResult)
+	return getResultsJson(sherlockResult, resultSnippets)
 
 def getGoogleResults(googleResultsString):
 	spl = googleResultsString.split(GOOGLE_RESULTS_DELIM)
@@ -64,6 +66,7 @@ def Waterfall(querystring, googresults):
 	googleresults = getGoogleResults(googresults)
 
 	results = commenceBattle(querystring, googleresults)
+	print results
 	return results
 
 # Waterfall(sys.argv[1].lower(), sys.argv[2].lower())

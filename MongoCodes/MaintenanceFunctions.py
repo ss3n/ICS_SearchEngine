@@ -96,7 +96,7 @@ def writeSnippetsToDatabase():
         body = body.split()
         body = ' '.join(body)
 
-        newdic = {'url':url}
+        newdic = {'url':standardize_url(url)}
         newdic['body']=body
 
         insertDocument(db, newdic, SNIPPETS_COLL)
