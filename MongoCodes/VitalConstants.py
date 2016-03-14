@@ -15,3 +15,4 @@ ANCHORS_INCOMING_DICT_KEY = 'incoming'
 ANCHORS_OUTGOING_DICT_KEY = 'outgoing'
 
 PAGERANK_COLL = 'pagerank'
+#test
