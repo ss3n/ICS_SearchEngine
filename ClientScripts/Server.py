@@ -38,7 +38,6 @@ def api_root(que):
     for i in a:
         print i
 
-
     return json.dumps(reqdJson)
 
 
