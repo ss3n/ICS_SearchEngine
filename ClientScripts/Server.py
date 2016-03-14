@@ -2,6 +2,10 @@ from flask import Flask, Response, url_for, request
 import flask
 import json 
 import httplib2 
+import sys
+sys.path.insert(0, '../Search')
+from Reichenbach import Waterfall
+
 
 app = Flask(__name__)
 
@@ -33,12 +37,12 @@ reqdJson['items'].append(item)
 def api_root(que):
     print request.url
     print que, 'is the query string'
-    goog = request.args.get('googleresults')
-    a= goog.split('`````')
-    for i in a:
-        print i
+    goog = request.args.get('searchresults')
+    print goog
 
-    return json.dumps(reqdJson)
+    ansJson = Waterfall(que, goog)
+
+    return json.dumps(ansJson)
 
 
 if __name__ == '__main__':

@@ -49,13 +49,21 @@ def getGoogleResults(googleResultsString):
 	spl = [standardize_url(urllib.unquote(i)) for i in spl]
 	return spl
 
-def main():
-	querystring = (sys.argv[1]).lower()
+# def main():
+# 	querystring = (sys.argv[1]).lower()
+# 	querystring = urllib.unquote(querystring)
+# 	querystring = querystring.replace('+',' ')
+# 	googleresults = getGoogleResults(sys.argv[2])
+
+# 	results = commenceBattle(querystring, googleresults)
+# 	return results
+
+def Waterfall(querystring, googresults):
 	querystring = urllib.unquote(querystring)
 	querystring = querystring.replace('+',' ')
-	googleresults = getGoogleResults(sys.argv[2])
+	googleresults = getGoogleResults(googresults)
 
 	results = commenceBattle(querystring, googleresults)
-	print results
+	return results
 
-main()
+# Waterfall(sys.argv[1].lower(), sys.argv[2].lower())
