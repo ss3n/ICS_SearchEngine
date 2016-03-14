@@ -111,11 +111,19 @@ class Moriarty:
 # Thou shalt be judged #
 ########################
 
+def sanitizeResults(arr):
+    return [i.rstrip('/') for i in arr]
+
 def NDCG(ideal, results):
     '''
         Given a list of ideal and obtained result URLs in descending rank, calculates norm cumulative gain
         NOTE: 1st argument is ideal ranking, 2nd is obtained ranking
     '''
+    ideal = sanitizeResults(ideal)
+    results = sanitizeResults(results)
+
+    # print ideal
+    # print results
 
     n = len(ideal)
     assert (n == len(results)), 'Ideal results and obtained results must be of same length'
@@ -130,8 +138,8 @@ def NDCG(ideal, results):
             ideal_ix = ideal.index(results[i])
             obtained_relevance[i] = ideal_relevance[ideal_ix]
 
-        except 'ValueError':
-            True
+        except ValueError:
+            pass
     
     idcg = ideal_relevance[0]
     for i in xrange(1,n):
@@ -141,4 +149,5 @@ def NDCG(ideal, results):
     for i in xrange(1,n):
         dcg += obtained_relevance[i]/log(i+1)
     
-    return dcg/idcg
+    # print idcg, dcg
+    return dcg#/idcg
