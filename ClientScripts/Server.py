@@ -32,6 +32,7 @@ reqdJson['items'].append(item)
 @app.route('/query=<que>', methods=['POST', 'GET'])
 def api_root(que):
     print request.url
+    print request.args.get('swad')	
     print que, 'is the query string'
 
     return json.dumps(reqdJson)

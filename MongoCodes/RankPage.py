@@ -45,15 +45,19 @@ def obtainIncomingAndOutgoingLinks():
     outgoing = {}
     incoming = {}
 
+    ctr=0
     cursor = coll.find()
     for doc in cursor: #For each document in the collection
         url = doc[URL_DICT_KEY]     #Obtain URL from the document
+        print url
 
         #If the document does not have the anchortext attribute at all, then it has no incoming or outgoing links
-        if doc[CONTENT_DICT_KEY][ANCHORS_DICT_KEY]:
+        if ANCHORS_DICT_KEY in doc[CONTENT_DICT_KEY]    :
             # Obtain the incoming & Outgoing dictionaries
             out = doc[CONTENT_DICT_KEY][ANCHORS_DICT_KEY][ANCHORS_OUTGOING_DICT_KEY]
             inc = doc[CONTENT_DICT_KEY][ANCHORS_DICT_KEY][ANCHORS_INCOMING_DICT_KEY]
+            if inc!= []:
+                inc = inc[0][1]
 
             #If either inc or out is empty, initialize the appropriate dictionaries with empty lists or length=0
             if out == []:
@@ -68,11 +72,15 @@ def obtainIncomingAndOutgoingLinks():
         else: # Case where there are no Incoming or Outgoing links
             outgoing[url] = 0
             incoming[url] = []
+        ctr+=1
+        print ctr
+    print 'Reading everything Done'
+    exit()
     return incoming, outgoing
 
 
 
-incoming, outgoing = obtainIncomingAndOutgoinLinks()
+incoming, outgoing = obtainIncomingAndOutgoingLinks()
 
 ''' for each element in corpus: PR(A) = (1-d) + sigma(PR(Ci) / T(Ci) ''' 
 
@@ -90,6 +98,7 @@ def writePageRanksToDatabase(pageranks):
 
 
 def main():
+    print '\n\nBeginning Main'
     currentPageRank = {i:1 for i in incoming.keys()}
     pastPageRank = {i:0 for i in incoming.keys()}
 
@@ -104,6 +113,6 @@ def main():
         print 'Iteration #', it
 
     print currentPageRank 
-    writePageRanksToDatabase(currentPageRank)
+    # writePageRanksToDatabase(currentPageRank)
 
 main()
