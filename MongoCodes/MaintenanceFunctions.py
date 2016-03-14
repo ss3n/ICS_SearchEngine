@@ -1,4 +1,5 @@
 import re
+from VitalConstants import *
 from MongoInput import *
 from MongoWrite import *
 import json
@@ -83,6 +84,24 @@ def cleanUrl(url):
     return True
     
 
+def writeSnippetsToDatabase():
+    j = json_provider()
+    client = createConnection()
+    db = selectDatabase(client, DBNAME)
+    print 'Loading complete'
+    ctr=0
+    for url in j.urls[1:]:
+        data_dict = j.html_dict[url]
+        body = data_dict['body']
+        body = body.split()
+        body = ' '.join(body)
+
+        newdic = {'url':url}
+        newdic['body']=body
+
+        insertDocument(db, newdic, SNIPPETS_COLL)
+        ctr+=1
+        print ctr
 
 ctr=0
 anchorset = {}

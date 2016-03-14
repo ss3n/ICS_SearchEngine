@@ -3,6 +3,7 @@ INVIDXCOLL = 'invIX'
 DBNAME = 'irindexer'
 CRAWLDUMP_DIR  = '../Crawl_processor/'
 STOPWORDS_FILE = 'stop_words.txt'
+#PROCESSEDCRAWLDUMP_FILENAME  = 'out100.pkl'
 PROCESSEDCRAWLDUMP_FILENAME  = 'out.pkl'
 PROCESSEDCRAWLDUMP_DIR = '../Data/'
 
@@ -15,4 +16,5 @@ ANCHORS_INCOMING_DICT_KEY = 'incoming'
 ANCHORS_OUTGOING_DICT_KEY = 'outgoing'
 
 PAGERANK_COLL = 'pagerank'
+SNIPPETS_COLL = 'snippets'
 #test
