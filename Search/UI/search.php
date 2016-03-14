@@ -22,9 +22,11 @@ $searchquery=$_POST['searchbox'];
 			<?php
 			
 			
+
 			$words=explode(" ", $searchquery);
 
 			//Build a parameterized query to pass through GET. Adding a + between each pair of words
+			
 			$result="";
 			foreach ($words as $word) 
 			{
@@ -34,38 +36,12 @@ $searchquery=$_POST['searchbox'];
 					$result=$result."+".$word;
 				}
 			}
-
+			
 			//The URL is the address at which our backend server is located
 			$URL="0.0.0.0:2564/query=";
 			$parameterized_query=$URL.$result;
 
-			//echo $parameterized_query;
-
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_URL,$parameterized_query);
-			$content = curl_exec($ch);
-			//echo $content;
-			$i=0;
-			if($obj=json_decode($content, true) and $i<20)
-			{
-				foreach($obj['items'] as $iteminstance)
-					{	
-						$i+=1;
-						$final_string_to_display= '<div class="item"><div class="itemheading"><h3><a href="'.$iteminstance["itemURL"].'">'.$iteminstance['itemheading'].'</a></h3></div><div class="itemcontent">'.$iteminstance['itemcontent'].'</div></div>';
-						foreach ($words as $word) 
-						{
-							$final_string_to_display= preg_replace($matched='#'.$word.'#i', $replacement='<span class="bolded">'.$word.'</span>', $final_string_to_display);
-							//echo " ".$matched." replaced=".$replacement;
-						}
-						echo $final_string_to_display;
-					}
-			}
-
-			else
-			{
-				echo "<p>Json is not valid</p>";
-			}
+			//echo "PQ:".$parameterized_query;
 
 			///////////////Google results code - retrieves top 5 google results and sends it to python server////
 
@@ -79,10 +55,10 @@ $searchquery=$_POST['searchbox'];
 
 
 			//$googleURL="http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=";
-			$google_parameterized_query=$googleURL.$result;
+			$google_parameterized_query=$googleURL.urlencode($result);
 
 			//echo $parameterized_query;
-
+			//echo $google_parameterized_query;
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_URL,$google_parameterized_query);
@@ -96,7 +72,10 @@ $searchquery=$_POST['searchbox'];
 			$i=0;
 			foreach ($json['items'] as $iteminstance)
 			{
+				//echo "<br>i=".$i."<br>";
+				//echo $iteminstance['link'];
 				if($i>=5) break;
+				$non_html_flag=false;
 				//just fetch items[link] and print it
 			if ($google_results_for_python=="")
 				{
@@ -120,21 +99,29 @@ $searchquery=$_POST['searchbox'];
 												|rm|smil|wmv|swf|wma|zip|rar|gz#',$iteminstance['link']);
 					if(!$non_html_flag)
 					{
-						$google_results_for_python=$google_results_for_python."###".$iteminstance['link'];
+						$google_results_for_python=$google_results_for_python."`````".$iteminstance['link'];
 						$i+=1;
 					}
 				}
 
 			}
 
+			if ($i==0)
+			echo "<br>Sorry, no normal HTML results to display<br>";
+
 				
-			//echo "Google results are as follows separated by a ###: ".$google_results_for_python;
-			$google_results_for_python="0.0.0.0:2564/googleresults=".$google_results_for_python;
+			//echo "Google results are as follows separated by a `````: ".$google_results_for_python;
+			//$google_results_for_python="0.0.0.0:2564/googleresults=".$google_results_for_python;
 
-			//echo $google_results_for_python;
+			//$google_results_for_python=$parameterized_query."&googleresults=".$google_results_for_python;
 
-			curl_setopt($ch, CURLOPT_URL,$google_results_for_python);
-			//$content = curl_exec($ch);
+			$final_query=$URL.urlencode($searchquery)."?googleresults=".$google_results_for_python;
+			///echo $google_results_for_python;
+			//echo "<br><p><b>query before encoding:</b></p> ".$final_query."<br><p><b>Query after encoding:</b></p>";
+			//$final_query=urlencode($final_query);
+			echo $final_query;
+			curl_setopt($ch, CURLOPT_URL,$final_query);
+			$content = curl_exec($ch);
 
 
 
@@ -144,6 +131,35 @@ $searchquery=$_POST['searchbox'];
 			//}
 
 			///////Google results code ends here/////////////
+			/*
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_URL,$final_query);
+			$content = curl_exec($ch);
+			//echo $content;
+			*/
+			$i=0;
+			if($obj=json_decode($content, true) and $i<20)
+			{
+				foreach($obj['items'] as $iteminstance)
+					{	
+						$i+=1;
+						$final_string_to_display= '<div class="item"><div class="itemheading"><h3><a href="'.$iteminstance["itemURL"].'">'.$iteminstance['itemheading'].'</a></h3></div><div class="itemcontent">'.$iteminstance['itemcontent'].'</div></div>';
+						foreach ($words as $word) 
+						{
+							$final_string_to_display= preg_replace($matched='#'.$word.'#i', $replacement='<span class="bolded">'.$word.'</span>', $final_string_to_display);
+							//echo " ".$matched." replaced=".$replacement;
+						}
+						echo $final_string_to_display;
+					}
+			}
+
+			else
+			{
+				echo "<p>Json is not valid</p>";
+			}
+
+
 
 			?>
 

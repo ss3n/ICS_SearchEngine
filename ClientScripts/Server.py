@@ -32,8 +32,12 @@ reqdJson['items'].append(item)
 @app.route('/query=<que>', methods=['POST', 'GET'])
 def api_root(que):
     print request.url
-    print request.args.get('swad')	
     print que, 'is the query string'
+    goog = request.args.get('googleresults')
+    a= goog.split('`````')
+    for i in a:
+        print i
+
 
     return json.dumps(reqdJson)
 
