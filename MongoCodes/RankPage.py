@@ -76,6 +76,18 @@ incoming, outgoing = obtainIncomingAndOutgoinLinks()
 
 ''' for each element in corpus: PR(A) = (1-d) + sigma(PR(Ci) / T(Ci) ''' 
 
+def writePageRanksToDatabase(pageranks):
+    ctr=1
+    for url, pagerank in pageranks.iteritems():
+        insert = {url:pagerank}
+        insertDocument(db, insert, PAGERANK_COLL)
+        ctr+=1
+
+        if ctr%1000 == 0:
+            print ctr
+    print ctr, ' urls inserted into PageRank Collection'
+
+
 
 def main():
     currentPageRank = {i:1 for i in incoming.keys()}
@@ -92,5 +104,6 @@ def main():
         print 'Iteration #', it
 
     print currentPageRank 
+    writePageRanksToDatabase(currentPageRank)
 
 main()
