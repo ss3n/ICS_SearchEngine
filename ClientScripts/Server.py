@@ -31,8 +31,13 @@ reqdJson['items'].append(item)
 #Alowas returns the same json object
 @app.route('/query=<que>', methods=['POST', 'GET'])
 def api_root(que):
-    print request.url
+    print 'ENTEERED .. . . .:'
     print que, 'is the query string'
+    goog = request.args.get('googleresults')
+    a= goog.split('`````')
+    for i in a:
+        print i
+
 
     return json.dumps(reqdJson)
 
