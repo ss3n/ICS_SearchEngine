@@ -39,7 +39,7 @@ $searchquery=$_POST['searchbox'];
 			
 			//The URL is the address at which our backend server is located
 			$URL="0.0.0.0:2564/query=";
-			$parameterized_query=$URL.$result;
+			//$parameterized_query=$URL.$result;
 
 			//echo "PQ:".$parameterized_query;
 
@@ -55,7 +55,8 @@ $searchquery=$_POST['searchbox'];
 
 
 			//$googleURL="http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=";
-			$google_parameterized_query=$googleURL.urlencode($result);
+			$google_parameterized_query=$googleURL.$result;
+			///echo $google_parameterized_query;
 
 			//echo $parameterized_query;
 			//echo $google_parameterized_query;
@@ -119,7 +120,7 @@ $searchquery=$_POST['searchbox'];
 			///echo $google_results_for_python;
 			//echo "<br><p><b>query before encoding:</b></p> ".$final_query."<br><p><b>Query after encoding:</b></p>";
 			//$final_query=urlencode($final_query);
-			echo $final_query;
+			//echo $final_query;
 			curl_setopt($ch, CURLOPT_URL,$final_query);
 			$content = curl_exec($ch);
 
@@ -139,7 +140,7 @@ $searchquery=$_POST['searchbox'];
 			//echo $content;
 			*/
 			$i=0;
-			if($obj=json_decode($content, true) and $i<20)
+			if($obj=json_decode($content, true) and $i<5)
 			{
 				foreach($obj['items'] as $iteminstance)
 					{	
@@ -154,12 +155,16 @@ $searchquery=$_POST['searchbox'];
 					}
 			}
 
+			/*
 			else
 			{
 				echo "<p>Json is not valid</p>";
 			}
+			*/
 
-
+			///Checking if the Json returned is empty
+			if(is_null($obj['items']))
+				echo '<p style="position:absolute;left:43%;float:left;">Json is empty</style></p>';
 
 			?>
 
